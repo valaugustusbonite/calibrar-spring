@@ -33,4 +33,16 @@ public class UserDto {
     @NotNull(message = "Birthday is required")
     private LocalDate birthDate;
 
+    public UserDto convertToDto(User response) {
+        return UserDto
+                .builder()
+                .email(response.getEmail())
+                .firstName(response.getFirstName())
+                .middleName(response.getMiddleName())
+                .lastName(response.getLastName())
+                .birthDate(response.getBirthDate())
+                .password(response.getPassword())
+                .build();
+    }
+
 }
