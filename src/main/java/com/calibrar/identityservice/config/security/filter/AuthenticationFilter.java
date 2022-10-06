@@ -3,7 +3,7 @@ package com.calibrar.identityservice.config.security.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.calibrar.identityservice.common.constants.SecurityConstants;
-import com.calibrar.identityservice.common.exception.ApiException;
+import com.calibrar.identityservice.common.exception.ErrorResponse;
 import com.calibrar.identityservice.config.security.manager.CustomAuthenticationManager;
 import com.calibrar.identityservice.domain.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,8 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -67,7 +65,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             HttpServletResponse response,
             AuthenticationException failed
     ) throws IOException, ServletException {
-        final ApiException resException = ApiException
+        final ErrorResponse resException = ErrorResponse
                 .builder()
                 .message(failed.getMessage())
                 .httpStatus(HttpStatus.UNAUTHORIZED)

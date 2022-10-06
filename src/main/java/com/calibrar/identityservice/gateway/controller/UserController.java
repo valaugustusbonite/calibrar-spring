@@ -28,7 +28,7 @@ public class UserController {
         return new ResponseEntity(responseDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/email/{email}")
     public final ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
         final UserDto responseDto = getUserByEmailUseCase.getUserByEmail(email);
 

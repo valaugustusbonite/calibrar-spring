@@ -16,7 +16,7 @@ public class ApiExceptionHandler {
     public ResponseEntity<Object> handleApiRequestException(ApiRequestException e) {
         final HttpStatus badRequest = HttpStatus.BAD_REQUEST;
 
-        final ApiException apiException = new ApiException(
+        final ErrorResponse apiException = new ErrorResponse(
                 e.getMessage(),
                 badRequest,
                 ZonedDateTime.now(ZoneId.of("Z"))
@@ -27,12 +27,23 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {DataIntegrityViolationException.class})
     public ResponseEntity<Object> conflictConstraintHandler(DataIntegrityViolationException e) {
-        final ApiException apiException = new ApiException(
+        final ErrorResponse apiException = new ErrorResponse(
                 e.getMessage(),
                 HttpStatus.BAD_REQUEST,
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
 
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = {EntityNotFoundException.class})
+    public ResponseEntity<ErrorResponse> entityNotFoundHandler(EntityNotFoundException e) {
+        final ErrorResponse response = new ErrorResponse(
+                e.getMessage(),
+                HttpStatus.NOT_FOUND,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
