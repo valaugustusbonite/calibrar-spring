@@ -31,13 +31,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         try {
-            System.out.println("TRIGGERED");
             User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
             final Authentication auth = authenticationManager.authenticate(authentication);
 
-            System.out.println("AUTH:" + auth.getCredentials());
             return auth;
         } catch (IOException e) {
             throw new RuntimeException();

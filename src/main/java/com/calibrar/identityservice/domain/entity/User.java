@@ -1,6 +1,7 @@
 package com.calibrar.identityservice.domain.entity;
 
 import com.calibrar.identityservice.common.entity.BaseEntity;
+import com.calibrar.identityservice.common.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,4 +56,7 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private UserStatus status;
 }
