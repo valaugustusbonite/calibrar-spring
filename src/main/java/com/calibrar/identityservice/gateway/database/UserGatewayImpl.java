@@ -7,11 +7,8 @@ import com.calibrar.identityservice.domain.entity.User;
 import com.calibrar.identityservice.gateway.exception.EmailAlreadyExistsException;
 import com.calibrar.identityservice.gateway.exception.UserAlreadyDeletedException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
