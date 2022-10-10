@@ -101,21 +101,21 @@ identity_service
 
 ### Feature
 
-1. Checkout from `master` to get the latest codebase
+1. Checkout from `main` to get the latest codebase
 2. Create feature branch ie. `feature/name-of-feature`
-3. Ready to merge your changes? Create a Merge Request to `master` branch
+3. Ready to merge your changes? Create a Merge Request to `main` branch
 
 ### Enhancement / Update
 
-1. Checkout from `master` to get the latest codebase
+1. Checkout from `main` to get the latest codebase
 2. Create feature branch ie. `enhancement/name-of-feature`
-3. Ready to merge your changes? Create a Merge Request to `master` branch
+3. Ready to merge your changes? Create a Merge Request to `main` branch
 
 ### Bugfix / Hotfix
 
-1. Checkout from `master` to get the latest codebase
+1. Checkout from `main` to get the latest codebase
 2. Create `bugfix` branch ie. `bugfix/name-of-feature`
-3. Ready to merge your changes? Create a Merge Request to `master` branch
+3. Ready to merge your changes? Create a Merge Request to `main` branch
 
 ## Commit Message
 
