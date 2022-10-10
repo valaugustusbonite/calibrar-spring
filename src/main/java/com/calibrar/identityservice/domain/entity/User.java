@@ -2,6 +2,7 @@ package com.calibrar.identityservice.domain.entity;
 
 import com.calibrar.identityservice.common.entity.BaseEntity;
 import com.calibrar.identityservice.common.enums.UserStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,6 +56,7 @@ public class User extends BaseEntity {
     private LocalDate birthDate;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(nullable = false)
