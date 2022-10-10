@@ -29,16 +29,26 @@ A few resources to get you started if this is your first Spring Boot project:
 ### Starting Development
 - see [Application Properties](#application-properties)
 - `mvn clean spring-boot:run` to run development
+### Database
+- This project uses PostgresQL as its database
+- Postgres download: https://www.postgresql.org/download/
+- pgAdmin: https://www.pgadmin.org/download/
+
+### ORM
+- This project uses Spring Data JPA to communicate with the database
+- Overview: https://spring.io/projects/spring-data-jpa
+- Other Resources: https://www.baeldung.com/the-persistence-layer-with-spring-data-jpa
 
 ### Application Properties
 Set the following properties in your application.properties file
-
-- spring.jpa.hibernate.ddl-auto=create-drop
-- spring.datasource.url=
-- spring.datasource.username=
-- spring.datasource.password=
-- spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
-- spring.jpa.properties.hibernate.format_sql= true
+```
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.datasource.url=                        # url of local db 
+spring.datasource.username=                   # username of local db
+spring.datasource.password=                   # password of local db
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.format_sql= true
+```
 
 ### Folder Structure
 
