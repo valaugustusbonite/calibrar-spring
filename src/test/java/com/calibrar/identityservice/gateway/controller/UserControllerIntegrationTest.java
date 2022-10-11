@@ -4,6 +4,7 @@ import com.calibrar.identityservice.common.enums.UserStatus;
 import com.calibrar.identityservice.domain.dto.UserDto;
 import com.calibrar.identityservice.domain.entity.User;
 import com.calibrar.identityservice.gateway.database.UserGatewayImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -18,20 +19,25 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.test.web.servlet.ResultActions.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -61,8 +67,9 @@ class UserControllerIntegrationTest {
 
     @BeforeAll
     public void setup() {
-
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).apply(springSecurity()).build();
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(this.wac)
+                .build();
         bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     }
@@ -70,9 +77,13 @@ class UserControllerIntegrationTest {
 
     @Test
     void createUser() throws Exception {
-
-        objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-        ObjectWriter ow = objectMapper.writer().withDefaultPrettyPrinter();
+        HashMap<String, Object> inputJson = new HashMap<String, Object>();
+        inputJson.put("email", "test@gmail.com");
+        inputJson.put("firstName", "firstName");
+        inputJson.put("middleName", "lastName");
+        inputJson.put("lastName", "lastName");
+        inputJson.put("birthDate", "1998-09-01");
+        inputJson.put("password", "password");
 
         UserDto userDto = UserDto
                 .builder()
@@ -83,41 +94,21 @@ class UserControllerIntegrationTest {
                 .birthDate(
                         LocalDate.of(1995, 01, 8)
                 )
-                .password(bCryptPasswordEncoder.encode("password"))
+                .password("password")
                 .build();
-
-        String requestJson=ow.writeValueAsString(userDto);
 
         Mockito.when(userGatewayImpl.createUser(any(UserDto.class))).thenReturn(userDto);
 
-
-
-//        mockMvc
-//                .perform(MockMvcRequestBuilders.post(baseUrl + "/register")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(requestJson))
-//                .andExpect(status().isCreated());
-
-        mockMvc.perform(
-                        MockMvcRequestBuilders.post("/api/v1/user/register")
-                                .content("{" +
-                                    "'email': 'anne@gmail.com, " +
-                                    "'firstName': 'Anne', " +
-                                    "'lastName': 'Concepcion', " +
-                                    "'birthDate': '1998-09-01', " +
-                                    "'password': 'password123'" +
-                                "}")
-                                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+        mockMvc.perform(MockMvcRequestBuilders.post(baseUrl +"/register").contentType(MediaType.APPLICATION_JSON)
+            .content(jsonBuilder(inputJson)).characterEncoding("utf-8"))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(status().isCreated());
 
 
         UserDto userRes = userGatewayImpl.createUser(userDto);
 
         // then
         assertThat(userRes.getFirstName()).isEqualTo(userDto.getFirstName());
-    }
-
-    @Test
-    void getUserByEmail() {
     }
 
     @Test
@@ -138,7 +129,7 @@ class UserControllerIntegrationTest {
         // when
         Mockito.when(userGatewayImpl.getUser(inputId)).thenReturn(userDto);
 
-        this.mockMvc
+        mockMvc
                 .perform(MockMvcRequestBuilders.get(baseUrl + "/{id}", 1).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content()
@@ -152,10 +143,99 @@ class UserControllerIntegrationTest {
     }
 
     @Test
-    void deleteUser() {
+    void deleteUser() throws Exception {
+        mockMvc
+                .perform(MockMvcRequestBuilders.patch(baseUrl + "/delete/{id}", inputId)
+                .param("id",  "1"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
+
+        final String success = "Test User has been successfully deleted";
+
+        Mockito.when(userGatewayImpl.deleteUser(any(Long.class))).thenReturn(success);
+        String response = userGatewayImpl.deleteUser(inputId);
+
+
+        assertThat(response).isEqualTo(success);
     }
 
     @Test
-    void updateUser() {
+    void updateUser() throws Exception {
+        HashMap<String, Object> inputJson = new HashMap<String, Object>();
+        inputJson.put("email", "test@gmail.com");
+        inputJson.put("firstName", "firstName");
+        inputJson.put("middleName", "lastName");
+        inputJson.put("lastName", "lastName");
+        inputJson.put("birthDate", "1998-09-01");
+        inputJson.put("password", "password");
+
+        UserDto userDto = UserDto
+                .builder()
+                .email("test@gmail.com")
+                .firstName("first")
+                .middleName("middle")
+                .lastName("last")
+                .birthDate(
+                        LocalDate.of(1995, 01, 8)
+                )
+                .password("password")
+                .build();
+
+
+
+        Mockito.when(userGatewayImpl.createUser(any(UserDto.class))).thenReturn(userDto);
+        userDto.setEmail("updatedemail@gmail.com");
+        Mockito.when(userGatewayImpl.updateUser(inputId, userDto)).thenReturn(userDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.put(baseUrl +"/update/{id}", inputId).contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonBuilder(inputJson)).characterEncoding("utf-8"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
+
+
+        UserDto userRes = userGatewayImpl.updateUser(inputId, userDto);
+
+        // then
+        assertThat(userRes.getEmail()).isEqualTo(userDto.getEmail());
     }
+
+    @Test
+    void verifyUser() throws Exception {
+        // given
+        UserDto userDto = UserDto
+                .builder()
+                .email("test@gmail.com")
+                .firstName("first")
+                .middleName("middle")
+                .lastName("last")
+                .birthDate(
+                        LocalDate.of(1995, 01, 8)
+                )
+                .password(bCryptPasswordEncoder.encode("password"))
+                .build();
+
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword());
+
+        // when
+        Mockito.when(userGatewayImpl.verifyUser(auth)).thenReturn(userDto);
+
+        mockMvc
+                .perform(MockMvcRequestBuilders.get(baseUrl + "/verify").contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
+
+        UserDto userRes = userGatewayImpl.verifyUser(auth);
+
+        // then
+        assertThat(userRes.getEmail()).isEqualTo(auth.getName());
+
+    }
+
+    private String jsonBuilder(Object value) throws JsonProcessingException {
+        objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = objectMapper.writer().withDefaultPrettyPrinter();
+
+        return ow.writeValueAsString(value);
+    }
+
 }

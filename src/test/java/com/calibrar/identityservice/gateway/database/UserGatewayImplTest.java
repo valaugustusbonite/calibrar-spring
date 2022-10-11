@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
@@ -165,6 +166,18 @@ class UserGatewayImplTest {
 
         assertThat(actual.getFirstName()).isEqualTo(userDto.getFirstName());
         verify(mockRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    void shouldVerifyUserUsingJWT() {
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDto.getEmail(), userDto.getPassword());
+
+        Mockito.when(mockRepository.findByEmail(auth.getName())).thenReturn(Optional.of(userEntity));
+
+        final UserDto actual = userGateway.verifyUser(auth);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(userEntity);
+        verify(mockRepository, times(1)).findByEmail(any(String.class));
     }
 
 
