@@ -1,6 +1,8 @@
 package com.calibrar.identityservice.gateway.exception;
 
-public class EmailAlreadyExistsException extends RuntimeException {
+import org.springframework.dao.DataIntegrityViolationException;
+
+public class EmailAlreadyExistsException extends DataIntegrityViolationException {
     public EmailAlreadyExistsException(String message) {
         super(message);
     }

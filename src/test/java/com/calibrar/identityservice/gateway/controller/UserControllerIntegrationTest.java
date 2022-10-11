@@ -4,6 +4,7 @@ import com.calibrar.identityservice.common.enums.UserStatus;
 import com.calibrar.identityservice.domain.dto.UserDto;
 import com.calibrar.identityservice.domain.entity.User;
 import com.calibrar.identityservice.gateway.database.UserGatewayImpl;
+import com.calibrar.identityservice.utils.CustomFormatter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -100,7 +101,7 @@ class UserControllerIntegrationTest {
         Mockito.when(userGatewayImpl.createUser(any(UserDto.class))).thenReturn(userDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post(baseUrl +"/register").contentType(MediaType.APPLICATION_JSON)
-            .content(jsonBuilder(inputJson)).characterEncoding("utf-8"))
+            .content(CustomFormatter.convertObjectToJson(inputJson)).characterEncoding("utf-8"))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(status().isCreated());
 
@@ -188,7 +189,7 @@ class UserControllerIntegrationTest {
         Mockito.when(userGatewayImpl.updateUser(inputId, userDto)).thenReturn(userDto);
 
         mockMvc.perform(MockMvcRequestBuilders.put(baseUrl +"/update/{id}", inputId).contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonBuilder(inputJson)).characterEncoding("utf-8"))
+                        .content(CustomFormatter.convertObjectToJson(inputJson)).characterEncoding("utf-8"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk());
 
@@ -231,11 +232,5 @@ class UserControllerIntegrationTest {
 
     }
 
-    private String jsonBuilder(Object value) throws JsonProcessingException {
-        objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-        ObjectWriter ow = objectMapper.writer().withDefaultPrettyPrinter();
-
-        return ow.writeValueAsString(value);
-    }
 
 }
