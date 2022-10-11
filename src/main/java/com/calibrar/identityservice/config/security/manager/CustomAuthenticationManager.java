@@ -35,11 +35,10 @@ public class CustomAuthenticationManager implements AuthenticationManager {
 
 
         if (!(bCryptPasswordEncoder.matches(authentication.getCredentials().toString(), user.getPassword()))) {
-            System.out.println("NOT AUTHORIZED");
             throw new BadCredentialsException("Invalid password");
         }
 
-        return new UsernamePasswordAuthenticationToken(authentication.getCredentials(), user.getPassword());
+        return new UsernamePasswordAuthenticationToken(authentication.getName(), user.getPassword());
 
     }
 }

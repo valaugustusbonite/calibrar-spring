@@ -7,6 +7,7 @@ import com.calibrar.identityservice.domain.entity.User;
 import com.calibrar.identityservice.gateway.exception.EmailAlreadyExistsException;
 import com.calibrar.identityservice.gateway.exception.UserAlreadyDeletedException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -53,7 +54,7 @@ public class UserGatewayImpl implements UserGateway {
         Optional<User> user  = userRepository.findByEmail(email);
 
         if (user.isEmpty()) {
-            throw new EntityNotFoundException("User with the email" + email + "does not exist.");
+            throw new EntityNotFoundException("User with the email " + email + " does not exist.");
         }
 
         final UserDto responseDto = new UserDto().convertToDto(user.get());
@@ -133,6 +134,11 @@ public class UserGatewayImpl implements UserGateway {
         final UserDto responseDto = new UserDto().convertToDto(response);
 
         return responseDto;
+    }
+
+    @Override
+    public UserDto verifyUser(Authentication auth) {
+        return getUserByEmail(auth.getName());
     }
 
 }

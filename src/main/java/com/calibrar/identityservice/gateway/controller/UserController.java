@@ -5,6 +5,7 @@ import com.calibrar.identityservice.use_cases.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,7 +19,7 @@ public class UserController {
     private final GetUserUseCase getUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
-
+    private final VerifyUserUseCase verifyUserUseCase;
 
 
     @PostMapping("/register")
@@ -52,6 +53,13 @@ public class UserController {
     @PutMapping("/update/{id}")
     public final ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto userInput) {
         final UserDto responseDto = updateUserUseCase.updateUser(id, userInput);
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/verify")
+    public final ResponseEntity<UserDto> verifyUser(Authentication auth) {
+        final UserDto responseDto = verifyUserUseCase.verifyUser(auth);
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }

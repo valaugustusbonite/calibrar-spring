@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.Period;
 
 @Data
 @AllArgsConstructor
@@ -61,4 +62,11 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private UserStatus status;
+
+    @Transient
+    private Integer age;
+
+    public Integer getAge() {
+        return Period.between(this.birthDate, LocalDate.now()).getYears();
+    }
 }

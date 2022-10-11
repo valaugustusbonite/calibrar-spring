@@ -37,6 +37,8 @@ public class UserDto {
     @NotNull(message = "Birthday is required")
     private LocalDate birthDate;
 
+    private Integer age;
+
     public UserDto convertToDto(User response) {
 
         return UserDto
@@ -46,6 +48,8 @@ public class UserDto {
                 .middleName(response.getMiddleName())
                 .lastName(response.getLastName())
                 .birthDate(response.getBirthDate())
+                .password(response.getPassword())
+                .age(response.getAge())
                 .build();
     }
 

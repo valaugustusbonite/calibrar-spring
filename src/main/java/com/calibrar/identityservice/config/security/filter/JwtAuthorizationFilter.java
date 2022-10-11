@@ -3,6 +3,7 @@ package com.calibrar.identityservice.config.security.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.calibrar.identityservice.common.constants.SecurityConstants;
+import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +31,7 @@ public class JwtAuthorizationFilter  extends OncePerRequestFilter {
                 .build()
                 .verify(token)
                 .getSubject();
+
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, Arrays.asList());
         SecurityContextHolder.getContext().setAuthentication(authentication);

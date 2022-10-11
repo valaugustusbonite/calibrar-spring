@@ -2,6 +2,7 @@ package com.calibrar.identityservice.gateway.database;
 
 import com.calibrar.identityservice.domain.dto.UserDto;
 import com.calibrar.identityservice.domain.entity.User;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -12,4 +13,6 @@ public interface UserGateway {
     UserDto getUser(Long id);
     String deleteUser(Long id);
     UserDto updateUser(Long id, UserDto userInput);
+
+    UserDto verifyUser(Authentication auth);
 }
