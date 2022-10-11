@@ -15,7 +15,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class UserController {
     private final RegisterUserUseCase registerUserUseCase;
-    private final GetUserByEmailUseCase getUserByEmailUseCase;
     private final GetUserUseCase getUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
@@ -27,13 +26,6 @@ public class UserController {
         final UserDto responseDto = registerUserUseCase.createUser(userDto);
 
         return new ResponseEntity(responseDto, HttpStatus.CREATED);
-    }
-
-    @GetMapping("/email/{email}")
-    public final ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) {
-        final UserDto responseDto = getUserByEmailUseCase.getUserByEmail(email);
-
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
