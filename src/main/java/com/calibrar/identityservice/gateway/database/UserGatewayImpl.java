@@ -69,6 +69,10 @@ public class UserGatewayImpl implements UserGateway {
             throw  new EntityNotFoundException("User does not exist");
         }
 
+        if (user.get().getStatus() == UserStatus.DELETED) {
+            throw new EntityNotFoundException("User has been deleted");
+        }
+
         final UserDto responseDto = new UserDto().convertToDto(user.get());
 
         return responseDto;
