@@ -22,7 +22,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (EntityNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().write("Email doesn't exist");
+            response.getWriter().write(e.getMessage());
             response.getWriter().flush();
         } catch (JWTVerificationException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -30,7 +30,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             response.getWriter().flush();
         } catch (RuntimeException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("BAD REQUEST");
+            response.getWriter().write(e.getMessage());
             response.getWriter().flush();
         }
     }
